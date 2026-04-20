@@ -10,6 +10,12 @@ Recursive folder navigation
 Dynamic data from MongoDB Atlas
 Clean sidebar UI
 
+Create new folders
+Create new files
+Create inside selected folder or root
+Dynamic selection handling (VS Code-like behavior)
+Selected file/folder preview in main panel
+
 Tech Stack
 
 Frontend
@@ -81,6 +87,20 @@ Behavior:
 parentId = null → fetch root files
 parentId = folderId → fetch child files
 
+2. Create File / Folder
+POST /api/files
+
+Request Body:
+{
+  "name": "File/Folder Name",
+  "type": "file" | "folder",
+  "parentId": "optional"
+}
+
+Behavior:
+If parentId is provided → item is created inside that folder
+If parentId is null → item is created in root
+
 Backend Logic
 Uses parentId to build hierarchical data
 Converts parentId into ObjectId for querying
@@ -131,6 +151,22 @@ When opened:
 API call is made (if not already fetched)
 Child files are loaded dynamically
 
+Create Functionality
+Users can create files and folders using toolbar buttons.
+A prompt is used to enter the name.
+
+Data is sent to backend via POST /api/files
+
+Pinia store updates UI instantly by pushing new data into the correct parent key.
+
+Selection Logic
+selectedId is used to track current selection.
+Clicking on:
+Folder/File → sets selectedId
+Empty space → resets selectedId (root)
+
+This ensures correct file placement similar to VS Code.
+
 Recursive Structure
 Implemented using TreeNode.vue
 Component calls itself for nested folders
@@ -160,6 +196,9 @@ Expandable structure for navigation
 Key Highlights
 Recursive component architecture
 Lazy loading for performance optimization
+Create file & folder functionality
+Dynamic selection handling (root vs nested)
+Real-time UI updates
 Clean state management using Pinia
 Scalable folder hierarchy
 Fast and minimal UI

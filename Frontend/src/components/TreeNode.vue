@@ -1,8 +1,10 @@
 <template>
   <div>
     <!-- ROW -->
-    <div @click="toggle"
-      class="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer hover:bg-gray-800 transition-all duration-200">
+    <div @click.stop="toggle(); selectNode()" :class="[
+      'flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer transition-all duration-200',
+      store.selectedId === node._id ? 'bg-gray-600 text-white' : 'hover:bg-gray-800'
+    ]">
       <!-- Arrow -->
       <span v-if="node.type === 'folder'" class="text-xs text-gray-500">
         {{ isOpen ? "▾" : "▸" }}
@@ -39,6 +41,10 @@ const isOpen = ref(false);
 const children = computed(() => {
   return store.files[props.node._id] || [];
 });
+
+const selectNode = () => {
+  store.selectedId = props.node._id;
+};
 
 const toggle = async () => {
   if (props.node.type === "file") return;
